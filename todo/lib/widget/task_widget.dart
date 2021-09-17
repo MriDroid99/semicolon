@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:todo/model/task.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/provider/task.dart';
 
 class TaskWidget extends StatelessWidget {
   final String id, title;
   final DateTime date;
   final TimeOfDay time;
   final Status? status;
-  final Function removeTask;
-  const TaskWidget(this.id, this.title, this.date, this.time, this.removeTask,
+  const TaskWidget(this.id, this.title, this.date, this.time,
       {Key? key, this.status})
       : super(key: key);
 
@@ -40,20 +40,24 @@ class TaskWidget extends StatelessWidget {
           caption: 'Delete',
           color: Colors.red,
           icon: Icons.delete,
-          onTap: () => removeTask(),
+          onTap: () =>
+              Provider.of<Tasks>(context, listen: false).removeTask(id),
         ),
         IconSlideAction(
-          caption: 'Archived',
+          caption: status == Status.archived ? 'Unarchived' : 'Archived',
           color: Colors.black45,
           icon: Icons.archive,
-          onTap: () => print('Archived'),
+          onTap: () => Provider.of<Tasks>(context, listen: false).toggleStatus(
+              id, status == Status.archived ? null : Status.archived),
         ),
-        IconSlideAction(
-          caption: 'Done',
-          color: Colors.blue,
-          icon: Icons.done_all,
-          onTap: () => print('Done'),
-        ),
+        if (status != Status.done)
+          IconSlideAction(
+            caption: 'Done',
+            color: Colors.blue,
+            icon: Icons.done_all,
+            onTap: () => Provider.of<Tasks>(context, listen: false)
+                .toggleStatus(id, Status.done),
+          ),
       ],
     );
     ;

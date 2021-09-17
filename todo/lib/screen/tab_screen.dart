@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/model/task.dart';
+import 'package:todo/provider/task.dart';
 import 'package:todo/screen/archived_screen.dart';
 import 'package:todo/screen/done_screen.dart';
 import 'package:todo/screen/tasks_screen.dart';
@@ -21,33 +21,12 @@ class _TabScreenState extends State<TabScreen> {
     });
   }
 
-  final List<Task> _tasks = [
-    Task(
-      id: '1',
-      title: 'Title 1',
-      date: DateTime.now(),
-      time: TimeOfDay.now(),
-    ),
-    Task(
-      id: '2',
-      title: 'Title 2',
-      date: DateTime.now(),
-      time: TimeOfDay.now(),
-    ),
-  ];
-
-  void removeTask(String id) {
-    setState(() {
-      _tasks.removeWhere((element) => element.id == id);
-    });
-  }
-
   @override
   void initState() {
     _pages = [
       {
         'title': 'Tasks',
-        'body': TasksScreen([..._tasks], removeTask),
+        'body': const TasksScreen(),
       },
       {
         'title': 'Archived',
@@ -88,6 +67,12 @@ class _TabScreenState extends State<TabScreen> {
             label: 'Done',
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/add_task_screen');
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
